@@ -1,0 +1,68 @@
+package com.example.CHALENGER_4.service;
+
+import com.example.CHALENGER_4.dto.TopicRequest;
+import com.example.CHALENGER_4.dto.TopicResponse;
+import com.example.CHALENGER_4.model.Course;
+import com.example.CHALENGER_4.model.Topic;
+import com.example.CHALENGER_4.model.User;
+import com.example.CHALENGER_4.repository.CourseRepository;
+import com.example.CHALENGER_4.repository.TopicRepository;
+import com.example.CHALENGER_4.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+
+@Service
+public class TopicService {
+
+    private final TopicRepository topicRepository;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+
+    public TopicService(TopicRepository topicRepository, UserRepository userRepository, CourseRepository courseRepository) {
+        this.topicRepository = topicRepository;
+        this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+    }
+
+    public List<TopicResponse> getAllTopics() {
+        return topicRepository.findAll().stream()
+                .map(TopicResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public TopicResponse createTopic(TopicRequest request) {
+        // Recupera el autor desde el UserRepository
+        User author = userRepository.findById(request.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("Author not found"));
+
+        // Recupera el curso desde el CourseRepository
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Crea el Topic con los objetos recuperados
+        Topic topic = new Topic(
+                UUID.randomUUID(),
+                request.getTitle(),
+                request.getMessage(),
+                request.getStatus(),
+                author, // Objeto User
+                course  // Objeto Course
+        );
+
+        return new TopicResponse(topicRepository.save(topic));
+    }
+
+    public TopicResponse getTopicById(UUID id) {
+        return topicRepository.findById(id)
+                .map(TopicResponse::new)
+                .orElseThrow(() -> new RuntimeException("Topic not found"));
+    }
+
+    public void deleteTopic(UUID id) {
+        topicRepository.deleteById(id);
+    }
+}
