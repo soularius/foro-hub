@@ -6,6 +6,7 @@ import com.example.CHALENGER_4.service.CourseService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
@@ -24,5 +25,20 @@ public class CourseController {
     @PostMapping
     public CourseResponse createCourse(@RequestBody CourseRequest request) {
         return courseService.createCourse(request);
+    }
+
+    @GetMapping("/{id}")
+    public CourseResponse getCourseById(@PathVariable UUID id) {
+        return courseService.getCourseById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCourse(@PathVariable UUID id) {
+        courseService.deleteCourse(id);
+    }
+
+    @PutMapping("/{id}")
+    public CourseResponse updateCourse(@PathVariable UUID id, @RequestBody CourseRequest request) {
+        return courseService.updateCourse(id, request);
     }
 }

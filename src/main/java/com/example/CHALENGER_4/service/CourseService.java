@@ -36,7 +36,21 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("Course not found"));
     }
 
+
     public void deleteCourse(UUID id) {
+        if (!courseRepository.existsById(id)) {
+            throw new RuntimeException("Course not found");
+        }
         courseRepository.deleteById(id);
+    }
+
+    public CourseResponse updateCourse(UUID id, CourseRequest request) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        course.setName(request.getName());
+        course.setDescription(request.getDescription());
+
+        return new CourseResponse(courseRepository.save(course));
     }
 }

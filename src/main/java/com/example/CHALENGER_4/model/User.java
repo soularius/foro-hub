@@ -1,6 +1,8 @@
 package com.example.CHALENGER_4.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +24,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<Course> courses;
+    private List<Course> courses = new ArrayList<>();
 
     public User() {
     }
@@ -65,6 +67,10 @@ public class User {
     public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
+
+    public List<Course> getCourses() { return courses; }
+
+    public void setCourses(List<Course> courses) { this.courses = courses; }
 
     @Override
     public String toString() {

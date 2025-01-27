@@ -4,6 +4,7 @@ import com.example.CHALENGER_4.model.Course;
 import com.example.CHALENGER_4.model.Topic;
 import com.example.CHALENGER_4.model.User;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class TopicResponse {
@@ -11,6 +12,7 @@ public class TopicResponse {
     private String title;
     private String message;
     private String status;
+    private LocalDateTime createdAt;
     private UserResponse author;
     private CourseResponse course;
 
@@ -22,6 +24,7 @@ public class TopicResponse {
         this.id = topic.getId();
         this.title = topic.getTitle();
         this.message = topic.getMessage();
+        this.createdAt = topic.getCreatedAt();
         this.status = topic.getStatus();
         this.author = new UserResponse(topic.getAuthor());
         this.course = new CourseResponse(topic.getCourse());

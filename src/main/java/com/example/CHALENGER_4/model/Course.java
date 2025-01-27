@@ -2,6 +2,8 @@ package com.example.CHALENGER_4.model;
 
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +20,7 @@ public class Course {
     private List<Topic> topics;
 
     @ManyToMany(mappedBy = "courses")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Course() {
     }

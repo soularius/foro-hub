@@ -10,6 +10,10 @@ import com.example.CHALENGER_4.repository.TopicRepository;
 import com.example.CHALENGER_4.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,6 +67,39 @@ public class TopicService {
     }
 
     public void deleteTopic(UUID id) {
+        if (!topicRepository.existsById(id)) {
+            throw new RuntimeException("Topic not found");
+        }
         topicRepository.deleteById(id);
+    }
+
+    public TopicResponse updateTopic(UUID id, TopicRequest request) {
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Topic not found"));
+
+        User author = userRepository.findById(request.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("Author not found"));
+
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        topic.setTitle(request.getTitle());
+        topic.setMessage(request.getMessage());
+        topic.setStatus(request.getStatus());
+        topic.setAuthor(author);
+        topic.setCourse(course);
+
+        return new TopicResponse(topicRepository.save(topic));
+    }
+
+    public Page<TopicResponse> getTopicsPaged(Pageable pageable) {
+        return topicRepository.findAll(pageable)
+                .map(TopicResponse::new);
+    }
+
+    public List<TopicResponse> searchTopics(String courseName, int year) {
+        return topicRepository.findByCourseNameAndYear(courseName, year).stream()
+                .map(TopicResponse::new)
+                .collect(Collectors.toList());
     }
 }

@@ -1,12 +1,25 @@
 package com.example.CHALENGER_4.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public class TopicRequest {
+
+    @NotBlank(message = "El título es obligatorio.")
     private String title;
+
+    @NotBlank(message = "El mensaje es obligatorio.")
     private String message;
+
+    @NotNull(message = "El status es obligatorio.")
     private String status;
+
+    @NotNull(message = "El autor es obligatorio.")
     private UUID authorId;
+
+    @NotNull(message = "El curso es obligatorio.")
     private UUID courseId;
 
     public TopicRequest() {
